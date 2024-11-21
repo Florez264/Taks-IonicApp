@@ -1,0 +1,7 @@
+{
+  "name": "FranquiciaAppIonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
