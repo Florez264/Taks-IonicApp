@@ -15,7 +15,6 @@ import { TabsComponent } from './tabs/tabs.component';
 @NgModule({
   declarations: [
     AppComponent,
-    CategoriasComponent,
     FiltrosComponent,
     TabsComponent,
   ],
@@ -26,6 +25,7 @@ import { TabsComponent } from './tabs/tabs.component';
     AppRoutingModule,
     FormsModule,
     TareasComponent,
+    CategoriasComponent,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

@@ -1,4 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { IonicModule} from '@ionic/angular';
 
 export interface Category {
   id: number;
@@ -7,6 +10,8 @@ export interface Category {
 
 @Component({
   selector: 'app-categorias',
+  standalone: true,
+  imports: [CommonModule, FormsModule, IonicModule],
   templateUrl: './categorias.component.html',
   styleUrls: ['./categorias.component.scss'],
 })
