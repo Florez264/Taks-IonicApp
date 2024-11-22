@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Categorías</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Formulario para agregar categorías -->
+  <ion-item>
+    <ion-input
+      placeholder="Nueva categoría"
+      [(ngModel)]="nuevaCategoria"
+    ></ion-input>
+    <ion-button (click)="agregarCategoria()" color="success">Agregar</ion-button>
+  </ion-item>
+
+  <!-- Lista de categorías -->
+  <ion-list>
+    <ion-item *ngFor="let categoria of categorias">
+      <ion-label>{{ categoria.nombre }}</ion-label>
+      <ion-button
+        slot="end"
+        fill="clear"
+        color="danger"
+        (click)="eliminarCategoria(categoria.id)"
+      >
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

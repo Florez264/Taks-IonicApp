@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Filtrar Tareas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-radio-group [(ngModel)]="categoriaSeleccionada">
+      <ion-item *ngFor="let categoria of categorias">
+        <ion-label>{{ categoria.nombre }}</ion-label>
+        <ion-radio slot="start" [value]="categoria.id"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+    <ion-item>
+      <ion-button expand="block" (click)="aplicarFiltro()" color="primary">
+        Aplicar Filtro
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>
