@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Nueva Tarea</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Título de la tarea</ion-label>
+    <ion-input 
+      type="text" 
+      placeholder="Ingresa el título" 
+      [(ngModel)]="newTaskTitle">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Categoría</ion-label>
+    <ion-select [(ngModel)]="newTaskCategoryId" placeholder="Selecciona una categoría">
+      <ion-select-option *ngFor="let category of categories" [value]="category.id">
+        {{ category.name }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="save()" [disabled]="!newTaskTitle.trim() || newTaskCategoryId === null">
+      Guardar
+    </ion-button>
+    <ion-button expand="block" color="medium" (click)="dismiss()">
+      Cancelar
+    </ion-button>
+  </div>
+</ion-content>

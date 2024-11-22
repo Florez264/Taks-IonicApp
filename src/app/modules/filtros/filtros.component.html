@@ -1,21 +1,31 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Filtrar Tareas</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="p-4">
+  <h1 class="text-xl font-bold mb-4">Filtrar por Categoría</h1>
 
-<ion-content class="ion-padding">
-  <ion-list>
-    <ion-radio-group [(ngModel)]="categoriaSeleccionada">
-      <ion-item *ngFor="let categoria of categorias">
-        <ion-label>{{ categoria.nombre }}</ion-label>
-        <ion-radio slot="start" [value]="categoria.id"></ion-radio>
-      </ion-item>
-    </ion-radio-group>
-    <ion-item>
-      <ion-button expand="block" (click)="aplicarFiltro()" color="primary">
-        Aplicar Filtro
-      </ion-button>
-    </ion-item>
-  </ion-list>
-</ion-content>
+  <!-- Botón para mostrar todas las tareas -->
+  <button
+    class="mb-2 rounded-lg px-4 py-2 w-full text-left"
+    [class.bg-blue-500]="!selectedCategoryId"
+    [class.text-white]="!selectedCategoryId"
+    [class.bg-gray-100]="selectedCategoryId"
+    [class.text-black]="selectedCategoryId"
+    (click)="selectCategory()"
+  >
+    Todas
+  </button>
+
+  <!-- Lista de categorías -->
+  <ul>
+    <li *ngFor="let category of categories" class="mb-2">
+      <button
+        class="rounded-lg px-4 py-2 w-full text-left"
+        [class.bg-blue-500]="selectedCategoryId === category.id"
+        [class.text-white]="selectedCategoryId === category.id"
+        [class.bg-gray-100]="selectedCategoryId !== category.id"
+        [class.text-black]="selectedCategoryId !== category.id"
+        (click)="selectCategory(category.id)"
+      >
+        {{ category.name }}
+      </button>
+    </li>
+  </ul>
+</div>

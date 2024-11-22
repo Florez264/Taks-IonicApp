@@ -10,19 +10,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { CategoriasComponent } from './modules/categorias/categorias.component';
 import { FiltrosComponent } from './modules/filtros/filtros.component';
 import { TareasComponent } from './modules/tareas/tareas.component';
+import { TabsComponent } from './tabs/tabs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoriasComponent,
-    FiltrosComponent
+    FiltrosComponent,
+    TabsComponent,
   ],
   imports: [
     BrowserModule,
+    IonicModule,
     IonicModule.forRoot(), 
     AppRoutingModule,
-    TareasComponent,
     FormsModule,
+    TareasComponent,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

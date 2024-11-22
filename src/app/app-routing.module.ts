@@ -3,13 +3,38 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { TareasComponent } from './modules/tareas/tareas.component';
 import { CategoriasComponent } from './modules/categorias/categorias.component';
 import { FiltrosComponent } from './modules/filtros/filtros.component';
+import { TabsComponent } from './tabs/tabs.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'tareas', pathMatch: 'full' },
-  { path: 'tareas', component: TareasComponent },
-  { path: 'categorias', component: CategoriasComponent },
-  { path: 'filtros', component: FiltrosComponent }
+  {
+    path: '',
+    redirectTo: '/tabs/tasks',
+    pathMatch: 'full',
+  },
+  {
+    path: 'tabs',
+    component: TabsComponent,
+    children: [
+      {
+        path: 'tasks',
+        component: TareasComponent,
+      },
+      {
+        path: 'categories',
+        component: CategoriasComponent,
+      },
+      {
+        path: 'filters',
+        component: FiltrosComponent,
+      },
+    ],
+  },
+  {
+    path: '**',
+    redirectTo: '/tabs/tasks',
+  },
 ];
+
 
 @NgModule({
   imports: [

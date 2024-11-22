@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Category } from '../categorias/categorias.component';
+
 
 interface Categoria {
   id: number;
@@ -10,22 +12,16 @@ interface Categoria {
   templateUrl: './filtros.component.html',
   styleUrls: ['./filtros.component.scss'],
 })
-export class FiltrosComponent  implements OnInit {
+export class FiltrosComponent {
 
-  categorias: Categoria[] = [];
-  categoriaSeleccionada: number | null = null;
+  @Input() categories: Category[] = [];
+  @Output() filterByCategory = new EventEmitter<number | undefined>();
 
-  ngOnInit() {
-    // Datos de prueba
-    this.categorias = [
-      { id: 1, nombre: 'Trabajo' },
-      { id: 2, nombre: 'Personal' },
-      { id: 3, nombre: 'Otros' }
-    ];
-  }
+  selectedCategoryId?: number; // Para rastrear la categoría seleccionada
 
-  aplicarFiltro() {
-    console.log('Filtro aplicado:', this.categoriaSeleccionada);
+  selectCategory(categoryId?: number) {
+    this.selectedCategoryId = categoryId;
+    this.filterByCategory.emit(categoryId);
   }
 
 }

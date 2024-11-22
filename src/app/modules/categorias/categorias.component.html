@@ -1,31 +1,62 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Categorías</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="p-4">
+  <h1 class="text-xl font-bold mb-4">Categorías</h1>
 
-<ion-content class="ion-padding">
-  <!-- Formulario para agregar categorías -->
-  <ion-item>
-    <ion-input
-      placeholder="Nueva categoría"
-      [(ngModel)]="nuevaCategoria"
-    ></ion-input>
-    <ion-button (click)="agregarCategoria()" color="success">Agregar</ion-button>
-  </ion-item>
+  <!-- Formulario para nueva categoría -->
+  <div class="flex mb-4">
+    <input
+      type="text"
+      class="flex-1 border rounded-lg p-2"
+      placeholder="Nueva categoría..."
+      [(ngModel)]="newCategoryName"
+    />
+    <button
+      class="ml-2 bg-blue-500 text-white rounded-lg px-4 py-2"
+      (click)="addCategory()"
+    >
+      Agregar
+    </button>
+  </div>
 
   <!-- Lista de categorías -->
-  <ion-list>
-    <ion-item *ngFor="let categoria of categorias">
-      <ion-label>{{ categoria.nombre }}</ion-label>
-      <ion-button
-        slot="end"
-        fill="clear"
-        color="danger"
-        (click)="eliminarCategoria(categoria.id)"
-      >
-        <ion-icon slot="icon-only" name="trash"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
-</ion-content>
+  <div *ngFor="let category of categories" class="flex items-center mb-2">
+    <span class="flex-1">{{ category.name }}</span>
+    <button
+      class="mr-2 text-blue-500"
+      (click)="editCategory(category)"
+    >
+      Editar
+    </button>
+    <button
+      class="text-red-500"
+      (click)="deleteCategory(category.id)"
+    >
+      Eliminar
+    </button>
+  </div>
+
+  <!-- Modal para editar categoría -->
+  <div *ngIf="editingCategory" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <h2 class="text-lg font-bold mb-4">Editar Categoría</h2>
+      <input
+        type="text"
+        class="border rounded-lg p-2 w-full mb-4"
+        [(ngModel)]="editingCategory.name"
+      />
+      <div class="flex justify-end space-x-2">
+        <button
+          class="bg-gray-500 text-white rounded-lg px-4 py-2"
+          (click)="cancelEdit()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="bg-blue-500 text-white rounded-lg px-4 py-2"
+          (click)="updateCategory()"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

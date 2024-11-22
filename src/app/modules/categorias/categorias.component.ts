@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-interface Categoria {
+export interface Category {
   id: number;
-  nombre: string;
+  name: string;
 }
 
 @Component({
@@ -11,32 +11,58 @@ interface Categoria {
   styleUrls: ['./categorias.component.scss'],
 })
 export class CategoriasComponent  implements OnInit {
+  categories: Category[] = [];
+  newCategoryName: string = '';
+  editingCategory?: Category; // Categoría que se está editando
 
-  categorias: Categoria[] = [];
-  nuevaCategoria: string = '';
-
-  ngOnInit() {
-    // Datos de prueba
-    this.categorias = [
-      { id: 1, nombre: 'Trabajo' },
-      { id: 2, nombre: 'Personal' },
-      { id: 3, nombre: 'Otros' }
-    ];
+  ngOnInit(): void {
+    this.loadCategories();
   }
 
-  agregarCategoria() {
-    if (this.nuevaCategoria.trim()) {
-      const nueva: Categoria = {
+  loadCategories() {
+    const storedCategories = localStorage.getItem('categories');
+    this.categories = storedCategories ? JSON.parse(storedCategories) : [];
+  }
+
+  saveCategories() {
+    localStorage.setItem('categories', JSON.stringify(this.categories));
+  }
+
+  addCategory() {
+    if (this.newCategoryName.trim()) {
+      this.categories.push({
         id: Date.now(),
-        nombre: this.nuevaCategoria
-      };
-      this.categorias.push(nueva);
-      this.nuevaCategoria = '';
+        name: this.newCategoryName,
+      });
+      this.newCategoryName = '';
+      this.saveCategories();
     }
   }
 
-  eliminarCategoria(id: number) {
-    this.categorias = this.categorias.filter(categoria => categoria.id !== id);
+  editCategory(category: Category) {
+    this.editingCategory = { ...category }; // Clonamos el objeto para evitar modificaciones directas
+  }
+
+  updateCategory() {
+    if (this.editingCategory) {
+      const index = this.categories.findIndex(
+        (cat) => cat.id === this.editingCategory!.id
+      );
+      if (index !== -1) {
+        this.categories[index] = this.editingCategory;
+        this.saveCategories();
+        this.cancelEdit();
+      }
+    }
+  }
+
+  cancelEdit() {
+    this.editingCategory = undefined;
+  }
+
+  deleteCategory(categoryId: number) {
+    this.categories = this.categories.filter((category) => category.id !== categoryId);
+    this.saveCategories();
   }
 
 }
