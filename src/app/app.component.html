@@ -1,8 +1,18 @@
 <ion-app>
+
+<ion-loading
+  [isOpen]="isLoading"
+  message="Cargando..."
+  spinner="crescent"
+></ion-loading>
+
+  <!-- El router-outlet será el encargado de cargar el componente según la ruta -->
   <ion-router-outlet></ion-router-outlet>
 
+  <!-- Footer con botones de navegación -->
   <ion-footer class="fixed bottom-0 w-full">
     <div class="flex justify-around bg-gray-100 p-4 border-t">
+      <!-- Botón para la vista de tareas -->
       <button
         class="flex flex-col items-center text-gray-700"
         [routerLink]="['/tasks']"
@@ -11,6 +21,7 @@
         <ion-icon name="list-outline" class="text-2xl"></ion-icon>
         <span class="text-sm">Tareas</span>
       </button>
+      <!-- Botón para la vista de categorías -->
       <button
         class="flex flex-col items-center text-gray-700"
         [routerLink]="['/categories']"

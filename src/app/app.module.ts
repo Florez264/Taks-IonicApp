@@ -7,16 +7,9 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { CategoriasComponent } from './modules/categorias/categorias.component';
-import { FiltrosComponent } from './modules/filtros/filtros.component';
-import { TareasComponent } from './modules/tareas/tareas.component';
-import { TabsComponent } from './tabs/tabs.component';
-
 @NgModule({
   declarations: [
     AppComponent,
-    FiltrosComponent,
-    TabsComponent,
   ],
   imports: [
     BrowserModule,
@@ -24,10 +17,8 @@ import { TabsComponent } from './tabs/tabs.component';
     IonicModule.forRoot(), 
     AppRoutingModule,
     FormsModule,
-    TareasComponent,
-    CategoriasComponent,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent,],
 })
 export class AppModule {}

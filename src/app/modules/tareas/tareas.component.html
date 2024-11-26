@@ -1,13 +1,12 @@
-<div class="p-4">
+<div *ngIf="featureEnabled; else featureDisabled" class="p-4">
   <h1 class="text-xl font-bold mb-4">Tareas</h1>
 
-  <!-- Botón para Abrir el Formulario de Nueva Tarea -->
+  
   <ion-button (click)="openTaskModal()">
     <ion-icon name="add"></ion-icon>
     Nueva Tarea
   </ion-button>
 
-  <!-- Filtros -->
   <div class="flex gap-4 my-4">
     <select
       class="border rounded-lg p-2 flex-1"
@@ -31,13 +30,12 @@
     </select>
   </div>
 
-  <!-- Lista de Tareas -->
   <div *ngFor="let task of filteredTasks" class="flex items-center mb-2">
     <input
       type="checkbox"
       class="mr-2"
-      [(ngModel)]="task.completed"
-      (change)="toggleTaskCompletion(task)"
+      [checked]="task.completed" 
+    (change)="onCheckboxChange($event, task)"
     />
     <span [class.line-through]="task.completed">{{ task.title }}</span>
     <span class="ml-2 text-sm text-gray-500">({{ getCategoryName(task.categoryId) }})</span>
@@ -50,3 +48,7 @@
   </div>
 
 </div>
+
+<ng-template #featureDisabled>
+  <p>Esta funcionalidad está desactivada por el administrador.</p>
+</ng-template>

@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import {NgClass, NgForOf, NgIf, NgStyle, SlicePipe} from "@angular/common";
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { AlertController, IonicModule, ModalController, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Category } from '../categorias/categorias.component';
-import { IonModal } from '@ionic/angular';
 import { TaskModalComponent } from 'src/app/modals/task-modal/task-modal.component';
+import { LoadingService } from 'src/app/services/loading.service';
+import { getFeatureFlag } from 'src/firebase.config';
+
 
 interface Task {
   id: number;
   title: string;
   completed: boolean;
-  categoryId?: number; // Asociada a una categoría (opcional)
+  categoryId?: number;
 }
 
 @Component({
@@ -31,16 +33,26 @@ export class TareasComponent  implements OnInit {
   filterCategoryId: number | null = null;
   filterStatus: boolean | null = null;
   isTaskModalOpen: boolean = false;
+  isLoading: boolean = false;
+  featureEnabled: boolean = false;
 
-  constructor(private modalController: ModalController) {}
 
-  ngOnInit(): void {
+
+  constructor(
+    private modalController: ModalController,
+    private alertController: AlertController,  
+    private toastController: ToastController,
+    private loadingService: LoadingService
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    this.featureEnabled = (await getFeatureFlag('feature_flag_tareas')) === 'enabled'; //disabled
     this.loadTasks();
     this.loadCategories();
     this.applyFilters();
   }
+  
 
-  // Gestión de Modal
   async openTaskModal() {
     const modal = await this.modalController.create({
       component: TaskModalComponent,
@@ -83,11 +95,12 @@ export class TareasComponent  implements OnInit {
     }
   }
 
-  // Cargar y guardar datos
   loadTasks() {
+    this.loadingService.show();
     const storedTasks = localStorage.getItem('tasks');
     this.tasks = storedTasks ? JSON.parse(storedTasks) : [];
     this.applyFilters();
+    this.loadingService.hide();
   }
 
   saveTasks() {
@@ -99,20 +112,98 @@ export class TareasComponent  implements OnInit {
     this.categories = storedCategories ? JSON.parse(storedCategories) : [];
   }
 
-  // Operaciones con tareas
-  toggleTaskCompletion(task: Task) {
-    task.completed = !task.completed;
-    this.saveTasks();
-    this.applyFilters();
+  async showCompletionToast(task: Task) {
+    const toast = await this.toastController.create({
+      message: task.completed
+        ? 'Tarea marcada como completada'
+        : 'Tarea desmarcada como incompleta',
+      duration: 2000,
+      position: 'top',
+      color: task.completed ? 'success' : 'warning',
+    });
+    toast.present();
   }
 
-  deleteTask(taskId: number) {
-    this.tasks = this.tasks.filter((task) => task.id !== taskId);
-    this.saveTasks();
-    this.applyFilters();
+  onCheckboxChange(event: Event, task: Task) {
+    event.preventDefault(); 
+    this.toggleTaskCompletion(task);
+  }
+  
+  async toggleTaskCompletion(task: Task) {
+    const isCompleted = task.completed; 
+  
+    const alert = await this.alertController.create({
+      header: isCompleted
+        ? 'Confirmar desmarcar tarea'
+        : 'Confirmar marcar tarea como completada',
+      message: isCompleted
+        ? '¿Estás seguro de que deseas desmarcar esta tarea como completada?'
+        : '¿Estás seguro de que deseas marcar esta tarea como completada?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: isCompleted ? 'Desmarcar' : 'Marcar',
+          handler: () => {
+            task.completed = !isCompleted;
+            this.saveTasks();
+            this.applyFilters();
+            this.showCompletionToast(task);
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
+  }
+  
+  async deleteTask(taskId: number) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar eliminación',
+      message: '¿Estás seguro de que deseas eliminar esta tarea?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel', 
+        },
+        {
+          text: 'Eliminar',
+          handler: async () => {
+            this.loadingService.show(); 
+  
+            try {
+              await new Promise(resolve => setTimeout(resolve, 500));
+              this.tasks = this.tasks.filter(task => task.id !== taskId);
+              this.saveTasks();
+              this.applyFilters();
+              this.showDeletionToast(); 
+            } catch (error) {
+              console.error('Error al eliminar la tarea:', error);
+            } finally {
+              this.loadingService.hide();
+            }
+          },
+        },
+      ],
+    });
+  
+    await alert.present();
+  }
+  
+  
+
+  async showDeletionToast() {
+    const toast = await this.toastController.create({
+      message: 'Tarea eliminada exitosamente',
+      duration: 2000,
+      position: 'top',
+      color: 'danger', 
+    });
+    toast.present();
   }
 
-  // Filtros
   applyFilters() {
     this.filteredTasks = this.tasks.filter((task) => {
       const matchesCategory =
@@ -123,7 +214,7 @@ export class TareasComponent  implements OnInit {
     });
   }
 
-  // Obtener nombre de categoría
+
   getCategoryName(categoryId?: number): string {
     const category = this.categories.find((cat) => cat.id === categoryId);
     return category ? category.name : 'Sin categoría';
